@@ -1,18 +1,24 @@
 import streamlit as st
 import os
 import json
+import sys
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from io import BytesIO
+from pathlib import Path
 
-from io import BytesIO
 # from content.unit1 import unit1_data
 # from content.unit2 import unit2_data
 # from content.unit3 import unit3_data
 # from content.unit4 import unit4_data
+
+BASE_DIR = Path(__file__).resolve().parent
+
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 
 from questions.important_questions import exam_zone_data
 from questions.model_answers import model_answers_data
@@ -26,7 +32,7 @@ def create_pdf(title, content):
     pdfmetrics.registerFont(
         TTFont(
             "AssameseFont",
-            "NotoSansBengali-VariableFont_wdth,wght.ttf"
+            str(BASE_DIR / "NotoSansBengali-VariableFont_wdth,wght.ttf")
         )
     )
 
@@ -79,8 +85,7 @@ st.set_page_config(
 # MASTER CONTENT MAP
 # -----------------------------------
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(BASE_DIR, "data", "notes.json")
+file_path = os.path.join(str(BASE_DIR), "data", "notes.json")
 
 def load_notes_data():
     if os.path.exists(file_path):
