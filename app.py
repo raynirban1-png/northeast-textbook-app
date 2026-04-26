@@ -120,7 +120,13 @@ all_units = load_notes_data()
 
 st.title("POL060304")
 st.subheader("Politics in Northeast India")
-st.write("ষষ্ঠ ষান্মাসিক | অসমীয়া ডিজিটেল পাঠ্যপুথি")
+st.write("ষষ্ঠ ষান্মাসিক | অসমীয়া ডিজিটেল পাঠ্যসামগ্ৰী")
+st.markdown(
+    """
+    **B.P Chaliha College (BPC)**  
+    BA 6th Semester
+    """
+)
 
 st.markdown("---")
 
@@ -244,9 +250,27 @@ elif menu == "Model Answers":
         list(model_answers_data.keys())
     )
 
-    st.subheader(selected_answer)
+    selected_model_answer = model_answers_data[selected_answer]
 
-    st.write(model_answers_data[selected_answer])
+    if isinstance(selected_model_answer, dict):
+        for question, answer in selected_model_answer.items():
+            st.subheader(question)
+
+            if isinstance(answer, str):
+                st.markdown(answer.replace("\n", "\n\n"))
+            elif isinstance(answer, dict):
+                for sub_question, sub_answer in answer.items():
+                    st.markdown(f"**{sub_question}**")
+                    st.markdown(str(sub_answer).replace("\n", "\n\n"))
+            elif isinstance(answer, (list, tuple)):
+                for item in answer:
+                    st.markdown(str(item).replace("\n", "\n\n"))
+            else:
+                st.markdown(str(answer).replace("\n", "\n\n"))
+
+            st.markdown("---")
+    else:
+        st.markdown(str(selected_model_answer).replace("\n", "\n\n"))
 
 elif menu == "দ্ৰুত পুনৰালোচনা":
 
@@ -406,4 +430,9 @@ elif menu == "Faculty Admin":
 # -----------------------------------
 
 
-st.caption("Designed for Semester 6 Students")
+st.markdown("---")
+st.caption(
+    "Prepared and Maintained by\n"
+    "Dr. Nirban Ray\n"
+    "Assistant Professor, Department of Political Science"
+)
