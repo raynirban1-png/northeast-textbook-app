@@ -289,6 +289,7 @@ elif menu == "Visual Learning Zone":
     st.title("Visual Learning Zone")
 
     st.subheader("Political Maps")
+    st.image("images/northeast_india_map.jpg", caption="Northeast India Political Map", use_container_width=True)
     st.markdown("""
 - Northeast India Political Map  
 - Colonial Assam Administrative Divisions  
