@@ -142,6 +142,7 @@ menu = st.radio(
         "Exam Zone",
         "Model Answers",
         "দ্ৰুত পুনৰালোচনা",
+        "Visual Learning Zone",
         "Faculty Admin"
     )
 )
@@ -283,7 +284,41 @@ elif menu == "দ্ৰুত পুনৰালোচনা":
 
     for item in quick_revision_data[selected_revision_unit]:
         st.write(f"• {item}")
+elif menu == "Visual Learning Zone":
 
+    st.title("Visual Learning Zone")
+
+    st.subheader("Political Maps")
+    st.markdown("""
+- Northeast India Political Map  
+- Colonial Assam Administrative Divisions  
+- Sixth Schedule Autonomous Areas  
+- State Reorganisation Maps  
+- Migration Routes in Assam  
+""")
+
+    st.subheader("Historical Timelines")
+    st.markdown("""
+- Treaty of Yandabo (1826)  
+- Phulaguri Dhewa (1861)  
+- Patharughat Uprising (1894)  
+- Assam Movement (1979–1985)  
+- Assam Accord (1985)  
+""")
+
+    st.subheader("Concept Flowcharts")
+    st.markdown("""
+- Colonial Policy → Economic Exploitation → Resistance  
+- Immigration → Identity Politics → Assam Movement  
+- Sixth Schedule → Autonomy → Political Consequences  
+""")
+
+    st.subheader("Comparative Analysis")
+    st.markdown("""
+- Colonial vs Marxist Historiography  
+- Excluded Areas vs Sixth Schedule  
+- Naga Nationalism vs Assam Movement  
+""")
 elif menu == "Faculty Admin":
 
     password = st.text_input(
