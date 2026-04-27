@@ -1,6 +1,5 @@
 exam_zone_data = {
-    "Unit I: Colonial Policy – Annexation and Administration": {
-
+    "Unit I": {
         "SECTION – A (MCQs 1×15=15)": [
             "1. The Treaty of Yandabo was signed in / ইয়ান্দাবো সন্ধি কেতিয়া স্বাক্ষৰিত হৈছিল? — A. 1824 B. 1826 C. 1835 D. 1857",
             "2. The Inner Line Regulation was introduced in / ইনাৰ লাইন নিয়ম কেতিয়া প্ৰৱৰ্তিত হৈছিল? — A. 1858 B. 1873 C. 1905 D. 1935",
@@ -18,7 +17,6 @@ exam_zone_data = {
             "14. Assamese middle class emerged due to / অসমীয়া মধ্যবিত্ত কিহৰ ফলত উদ্ভৱ হৈছিল? — A. Industrialisation B. Colonial education C. Oil discovery D. Tribal autonomy",
             "15. Marxist historians interpret Phulaguri as / মার্ক্সবাদী ঐতিহাসিকসকলে ফুলাগুৰিক কিদৰে ব্যাখ্যা কৰে? — A. Religious reform B. Ethnic conflict C. Class struggle D. Language protest"
         ],
-
         "SECTION – B (Very Short Answer 2×5=10)": [
             "1. Define Inner Line Regulation / ইনাৰ লাইন নিয়ম সংজ্ঞা দিয়া।",
             "2. Mention two features of Plantation Capitalism / Plantation Capitalism-ৰ দুটা বৈশিষ্ট্য লিখা।",
@@ -31,7 +29,6 @@ exam_zone_data = {
             "9. What is meant by Durable Disorder? / Durable Disorder মানে কি?",
             "10. What is Spatial Segregation? / Spatial Segregation মানে কি?"
         ],
-
         "SECTION – C (Short Answer 5×4=20)": [
             "1. Explain the geo-strategic importance of Northeast India / উত্তৰ-পূব ভাৰতৰ ভৌগোলিক-ৰাজনৈতিক গুৰুত্ব ব্যাখ্যা কৰা।",
             "2. Discuss the objectives of the Inner Line Regulation / ইনাৰ লাইন নিয়মৰ উদ্দেশ্যসমূহ আলোচনা কৰা।",
@@ -41,7 +38,6 @@ exam_zone_data = {
             "6. Explain the Marxist interpretation of colonial Assam / ঔপনিবেশিক অসমৰ মার্ক্সবাদী ব্যাখ্যা ব্যাখ্যা কৰা।",
             "7. Discuss the debate on Assamese middle class / অসমীয়া মধ্যবিত্তৰ বিতৰ্ক আলোচনা কৰা।"
         ],
-
         "SECTION – D (Long Answer 10×2=20)": [
             "1. Critically examine the colonial administrative policy in Assam / অসমত ঔপনিৱেশিক প্ৰশাসনিক নীতি সমালোচনামূলকভাৱে আলোচনা কৰা।",
             "2. Analyse the long-term political consequences of the Inner Line Regulation / ইনাৰ লাইন নিয়মৰ দীৰ্ঘমেয়াদী ৰাজনৈতিক প্ৰভাৱ বিশ্লেষণ কৰা।",
@@ -49,11 +45,8 @@ exam_zone_data = {
             "4. Compare Colonial and Marxist historiography of Assam / অসমৰ ঔপনিৱেশিক আৰু মার্ক্সবাদী ঐতিহাসিক ব্যাখ্যাৰ তুলনা কৰা।",
             "5. Examine the debate on Assamese middle class in colonial Assam with historiographical references / ঔপনিৱেশিক অসমত অসমীয়া মধ্যবিত্তৰ বিতৰ্ক ঐতিহাসিক ব্যাখ্যাৰ আলোকত পৰ্যালোচনা কৰা।"
         ]
-    }
-}
-
-unit2_exam_zone_data = {
-    "Unit II: Anti-Colonial Revolts and Freedom Movement in Assam": {
+    },
+    "Unit II": {
         "SECTION – A (MCQs 1×15=15)": [
             "1. Large-scale immigration to Assam increased significantly after:\nA. 1826\nB. 1905\nC. 1947\nD. 1971\nঅসমলৈ বৃহৎ পৰিমাণৰ প্ৰৱ্ৰজন গুৰুত্বপূৰ্ণভাৱে বৃদ্ধি পায় কেতিয়াৰ পিছত?",
             "2. The Bangladesh Liberation War occurred in:\nA. 1962\nB. 1965\nC. 1971\nD. 1985\nবাংলাদেশ মুক্তিযুদ্ধ কেতিয়া সংঘটিত হৈছিল?",
@@ -101,5 +94,3 @@ unit2_exam_zone_data = {
         ]
     }
 }
-
-exam_zone_data.update(unit2_exam_zone_data)
