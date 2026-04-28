@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import json
 import sys
+from pprint import pformat
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
@@ -26,6 +27,7 @@ from questions.model_answers import model_answers_data
 from content.references import reference_data
 from revision.quick_revision import quick_revision_data
 FACULTY_PASSWORD = "Hybrid2030"
+important_questions = exam_zone_data
 
 def create_pdf(title, content):
     buffer = BytesIO()
@@ -107,6 +109,7 @@ st.set_page_config(
 # -----------------------------------
 
 file_path = os.path.join(str(BASE_DIR), "data", "notes.json")
+important_questions_file_path = BASE_DIR / "questions" / "important_questions.py"
 
 def load_notes_data():
     if os.path.exists(file_path):
@@ -131,6 +134,21 @@ def save_notes_data(notes_data):
 
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+def save_important_questions_data(question_data):
+    temp_file_path = f"{important_questions_file_path}.tmp"
+    serialized_data = "exam_zone_data = " + pformat(
+        question_data,
+        width=120,
+        sort_dicts=False
+    ) + "\n"
+
+    with open(temp_file_path, "w", encoding="utf-8") as f:
+        f.write(serialized_data)
+        f.flush()
+        os.fsync(f.fileno())
+
+    os.replace(temp_file_path, important_questions_file_path)
 
 all_units = load_notes_data()
 
@@ -507,6 +525,9 @@ elif menu == "Faculty Admin":
     if st.session_state.pop("faculty_restore_success", False):
         st.success("Backup restored successfully")
 
+    if st.session_state.pop("question_save_success", False):
+        st.success("Question updated successfully.")
+
     unit_name = st.selectbox(
         "Select Unit",
         [
@@ -586,6 +607,63 @@ elif menu == "Faculty Admin":
                 st.rerun()
             else:
                 st.error("Save verification failed. The JSON file did not update as expected.")
+
+    st.markdown("---")
+    st.subheader("Important Questions Editor")
+
+    question_unit = st.selectbox(
+        "Select Question Unit",
+        list(important_questions.keys()),
+        key="question_unit_select"
+    )
+
+    question_section = st.selectbox(
+        "Select Section",
+        list(important_questions[question_unit].keys()),
+        key="question_section_select"
+    )
+
+    existing_questions = important_questions[question_unit][question_section]
+
+    selected_question = st.selectbox(
+        "Select Existing Question",
+        ["Create New Question"] + existing_questions,
+        key="question_existing_select"
+    )
+
+    if selected_question == "Create New Question":
+        edited_question = st.text_area(
+            "Enter New Question",
+            height=150,
+            key="new_question_editor"
+        )
+    else:
+        edited_question = st.text_area(
+            "Edit Selected Question",
+            value=selected_question,
+            height=150,
+            key="existing_question_editor"
+        )
+
+    if st.button("Save Question Update"):
+
+        normalized_question = edited_question.strip()
+
+        if normalized_question:
+            updated_questions = existing_questions.copy()
+
+            if selected_question != "Create New Question":
+                updated_questions.remove(selected_question)
+
+            updated_questions.append(normalized_question)
+            important_questions[question_unit][question_section] = updated_questions
+            save_important_questions_data(important_questions)
+
+            st.session_state["question_save_success"] = True
+            st.rerun()
+
+        else:
+            st.error("Question cannot be empty.")
 
     st.markdown("---")
     st.subheader("Backup System")
