@@ -190,21 +190,16 @@ if selected_state != "home":
 # HEADER
 # -----------------------------------
 
-st.image("images/logo.png", width=140)
+st.image("images/logo.png", width=90)
 
-st.title("POL060304 – Politics in Northeast India")
-st.subheader("B.P. Chaliha College (BPC)")
-st.markdown("### BA 6th Semester Academic Learning Platform")
+st.markdown("## POL060304")
+st.markdown("### Politics in Northeast India")
 
-st.info("Updated for BA 6th Semester • 2026 Academic Session")
+st.markdown("**B.P. Chaliha College (BPC)**  \nBA 6th Semester Academic Learning Platform")
 
-st.markdown(
-    """
-Welcome to the official academic learning platform for Political Science students.
-This platform provides study materials, exam preparation support, model answers,
-visual learning resources, and faculty-guided academic content.
-"""
-)
+st.caption("Version 1.0 • Updated for Academic Session 2026")
+
+st.info("Faculty-guided academic support for study materials, exam preparation, model answers, revision, and visual learning.")
 
 st.markdown("---")
 
@@ -664,7 +659,7 @@ elif menu == "Faculty Admin":
 
         else:
             st.error("Question cannot be empty.")
-
+    
     st.markdown("---")
     st.subheader("Backup System")
 
