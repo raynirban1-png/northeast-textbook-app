@@ -416,145 +416,145 @@ For corrections, updates, or faculty review, please contact the department/admin
 """)
 elif menu == "Faculty Admin":
 
-    password = st.text_input(
-        "Faculty Password",
+    st.title("Faculty Admin")
+
+    admin_password = st.text_input(
+        "Enter Faculty Access Password",
         type="password"
     )
 
-    if password:
+    if admin_password != FACULTY_PASSWORD:
+        st.warning("Faculty access only.")
+        st.stop()
 
-        if password != FACULTY_PASSWORD:
-            st.error("Access denied")
+    st.success("Access Granted")
+
+    st.header("Faculty Admin Panel")
+    st.warning("Only for faculty content updates")
+
+    notes_data = load_notes_data()
+    if not isinstance(notes_data, dict):
+        notes_data = {}
+
+    if st.session_state.pop("faculty_save_success", False):
+        st.success("Note saved successfully")
+
+    if st.session_state.pop("faculty_restore_success", False):
+        st.success("Backup restored successfully")
+
+    unit_name = st.selectbox(
+        "Select Unit",
+        [
+            "Unit I",
+            "Unit II",
+            "Unit III",
+            "Unit IV"
+        ],
+        key="faculty_unit_name"
+    )
+
+    unit_topics = notes_data.get(unit_name, {})
+    if not isinstance(unit_topics, dict):
+        unit_topics = {}
+
+    topic_options = list(unit_topics.keys()) + ["+ Add New Topic"]
+
+    pending_topic_choice = st.session_state.pop(
+        "faculty_pending_topic_choice",
+        None
+    )
+    if pending_topic_choice in topic_options:
+        st.session_state["faculty_topic_choice"] = pending_topic_choice
+
+    topic_choice = st.selectbox(
+        "Select Existing Topic",
+        topic_options,
+        key="faculty_topic_choice"
+    )
+
+    if topic_choice == "+ Add New Topic":
+        if st.session_state.pop("faculty_clear_new_topic_name", False):
+            st.session_state["faculty_new_topic_name"] = ""
+        topic_name = st.text_input(
+            "New Topic Name",
+            key="faculty_new_topic_name"
+        ).strip()
+    else:
+        topic_name = topic_choice
+
+    editor_target = (unit_name, topic_choice)
+    if st.session_state.get("faculty_editor_target") != editor_target:
+        st.session_state["faculty_topic_content"] = (
+            unit_topics.get(topic_name, "")
+            if topic_choice != "+ Add New Topic"
+            else ""
+        )
+        st.session_state["faculty_editor_target"] = editor_target
+
+    topic_content = st.text_area(
+        "Full Note Content",
+        height=300,
+        key="faculty_topic_content"
+    )
+
+    if st.button("Save Note"):
+
+        if not topic_name:
+            st.error("Enter a topic name before saving.")
+        else:
+            latest_notes_data = load_notes_data()
+            if not isinstance(latest_notes_data, dict):
+                latest_notes_data = {}
+
+            latest_notes_data.setdefault(unit_name, {})
+            latest_notes_data[unit_name][topic_name] = topic_content
+
+            saved_data = save_notes_data(latest_notes_data)
+
+            saved_content = saved_data.get(unit_name, {}).get(topic_name)
+
+            if saved_content == topic_content:
+                st.session_state["faculty_save_success"] = True
+                st.session_state["faculty_pending_topic_choice"] = topic_name
+                st.session_state["faculty_clear_new_topic_name"] = True
+                st.session_state["faculty_editor_target"] = (unit_name, topic_name)
+                st.rerun()
+            else:
+                st.error("Save verification failed. The JSON file did not update as expected.")
+
+    st.markdown("---")
+    st.subheader("Backup System")
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        backup_data = f.read()
+
+    st.download_button(
+        label="Download Full Backup",
+        data=backup_data,
+        file_name="notes_backup.json",
+        mime="application/json"
+    )
+
+    st.markdown("---")
+    st.subheader("Restore Backup")
+
+    uploaded_backup = st.file_uploader(
+        "Upload Backup JSON File",
+        type=["json"],
+        key="faculty_uploaded_backup"
+    )
+
+    if uploaded_backup is not None and st.button("Restore Backup"):
+
+        restored_data = json.load(uploaded_backup)
+        if not isinstance(restored_data, dict):
+            st.error("Backup JSON must contain a top-level object.")
             st.stop()
 
-        st.success("Faculty access granted")
+        save_notes_data(restored_data)
 
-        st.header("Faculty Admin Panel")
-        st.warning("Only for faculty content updates")
-
-        notes_data = load_notes_data()
-        if not isinstance(notes_data, dict):
-            notes_data = {}
-
-        if st.session_state.pop("faculty_save_success", False):
-            st.success("Note saved successfully")
-
-        if st.session_state.pop("faculty_restore_success", False):
-            st.success("Backup restored successfully")
-
-        unit_name = st.selectbox(
-            "Select Unit",
-            [
-                "Unit I",
-                "Unit II",
-                "Unit III",
-                "Unit IV"
-            ],
-            key="faculty_unit_name"
-        )
-
-        unit_topics = notes_data.get(unit_name, {})
-        if not isinstance(unit_topics, dict):
-            unit_topics = {}
-
-        topic_options = list(unit_topics.keys()) + ["+ Add New Topic"]
-
-        pending_topic_choice = st.session_state.pop(
-            "faculty_pending_topic_choice",
-            None
-        )
-        if pending_topic_choice in topic_options:
-            st.session_state["faculty_topic_choice"] = pending_topic_choice
-
-        topic_choice = st.selectbox(
-            "Select Existing Topic",
-            topic_options,
-            key="faculty_topic_choice"
-        )
-
-        if topic_choice == "+ Add New Topic":
-            if st.session_state.pop("faculty_clear_new_topic_name", False):
-                st.session_state["faculty_new_topic_name"] = ""
-            topic_name = st.text_input(
-                "New Topic Name",
-                key="faculty_new_topic_name"
-            ).strip()
-        else:
-            topic_name = topic_choice
-
-        editor_target = (unit_name, topic_choice)
-        if st.session_state.get("faculty_editor_target") != editor_target:
-            st.session_state["faculty_topic_content"] = (
-                unit_topics.get(topic_name, "")
-                if topic_choice != "+ Add New Topic"
-                else ""
-            )
-            st.session_state["faculty_editor_target"] = editor_target
-
-        topic_content = st.text_area(
-            "Full Note Content",
-            height=300,
-            key="faculty_topic_content"
-        )
-
-        if st.button("Save Note"):
-
-            if not topic_name:
-                st.error("Enter a topic name before saving.")
-            else:
-                latest_notes_data = load_notes_data()
-                if not isinstance(latest_notes_data, dict):
-                    latest_notes_data = {}
-
-                latest_notes_data.setdefault(unit_name, {})
-                latest_notes_data[unit_name][topic_name] = topic_content
-
-                saved_data = save_notes_data(latest_notes_data)
-
-                saved_content = saved_data.get(unit_name, {}).get(topic_name)
-
-                if saved_content == topic_content:
-                    st.session_state["faculty_save_success"] = True
-                    st.session_state["faculty_pending_topic_choice"] = topic_name
-                    st.session_state["faculty_clear_new_topic_name"] = True
-                    st.session_state["faculty_editor_target"] = (unit_name, topic_name)
-                    st.rerun()
-                else:
-                    st.error("Save verification failed. The JSON file did not update as expected.")
-
-        st.markdown("---")
-        st.subheader("Backup System")
-
-        with open(file_path, "r", encoding="utf-8") as f:
-            backup_data = f.read()
-
-        st.download_button(
-            label="Download Full Backup",
-            data=backup_data,
-            file_name="notes_backup.json",
-            mime="application/json"
-        )
-
-        st.markdown("---")
-        st.subheader("Restore Backup")
-
-        uploaded_backup = st.file_uploader(
-            "Upload Backup JSON File",
-            type=["json"],
-            key="faculty_uploaded_backup"
-        )
-
-        if uploaded_backup is not None and st.button("Restore Backup"):
-
-            restored_data = json.load(uploaded_backup)
-            if not isinstance(restored_data, dict):
-                st.error("Backup JSON must contain a top-level object.")
-                st.stop()
-
-            save_notes_data(restored_data)
-
-            st.session_state["faculty_restore_success"] = True
-            st.rerun()
+        st.session_state["faculty_restore_success"] = True
+        st.rerun()
 # -----------------------------------
 # FOOTER
 # -----------------------------------
