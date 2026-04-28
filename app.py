@@ -407,6 +407,7 @@ maps, diagrams, timelines, and visual summaries.
             "Autonomy Councils Structure",
             "Regional Political Movements",
             "Constitutional Framework of Northeast India"
+            "Demographic Changes in Undivided Goalpara District",
         ]
     )
 
@@ -458,6 +459,28 @@ and statehood movements.
 Important for exams covering constitutional provisions,
 special status, and federal structure.
 """)
+    elif visual_unit == "Demographic Changes in Undivided Goalpara District":
+
+        st.image(
+            "images/goalpara_demographic_changes.png",
+            use_container_width=True
+        )
+
+    st.write("""
+This visual explains the long-term demographic transformation of
+Undivided Goalpara District from 1901 to 2020.
+
+It helps students understand:
+
+- migration and settlement patterns  
+- religion and identity politics  
+- demographic change and electoral politics  
+- political implications of population shifts  
+- regional tensions linked to migration debates
+
+This is highly relevant for understanding Assam politics,
+identity movements, and contemporary electoral discourse.
+""") 
 elif menu == "About & Disclaimer":
 
     st.title("About This Academic App")
