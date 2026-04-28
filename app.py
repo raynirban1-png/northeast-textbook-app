@@ -168,19 +168,48 @@ st.markdown("---")
 # -----------------------------------
 
 menu = st.radio(
-    "বিভাগ নির্বাচন কৰক",
-    (
-        "পাঠ্য সামগ্ৰী",
-        "Search Topic",
-        "Exam Zone",
-        "Model Answers",
-        "দ্ৰুত পুনৰালোচনা",
-        "Visual Learning Zone",
-        "About & Disclaimer",
-        "Faculty Admin"
-    )
-)
+    st.title("POL060304 – Politics in Northeast India")
+st.subheader("BA 6th Semester Academic Learning Platform")
 
+st.markdown("---")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("📘 Study Materials", use_container_width=True):
+        menu = "পাঠ্য সামগ্ৰী"
+
+    if st.button("📝 Exam Zone", use_container_width=True):
+        menu = "Exam Zone"
+
+    if st.button("📄 Model Answers", use_container_width=True):
+        menu = "Model Answers"
+
+    if st.button("⚡ Quick Revision", use_container_width=True):
+        menu = "দ্ৰুত পুনৰালোচনা"
+
+with col2:
+    if st.button("🗺 Visual Learning Zone", use_container_width=True):
+        menu = "Visual Learning Zone"
+
+    if st.button("🔍 Search Topic", use_container_width=True):
+        menu = "Search Topic"
+
+    if st.button("👨‍🏫 Faculty Admin", use_container_width=True):
+        menu = "Faculty Admin"
+
+    if st.button("ℹ About & Disclaimer", use_container_width=True):
+        menu = "About & Disclaimer"
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "পাঠ্য সামগ্ৰী"
+
+if "menu" in locals():
+    st.session_state.menu = menu
+
+menu = st.session_state.menu
+
+st.markdown("---")
 # -----------------------------------
 # STUDY MATERIALS
 # -----------------------------------
