@@ -113,6 +113,39 @@ def save_notes_data(notes_data):
 
 all_units = load_notes_data()
 
+query_params = st.query_params
+selected_state = query_params.get("state", "home")
+
+if isinstance(selected_state, list):
+    selected_state = selected_state[0]
+
+selected_state = str(selected_state).strip().lower()
+
+state_pages = {
+    "assam": ("Assam (অসম)", "Welcome to the Assam Textbook and Paper section."),
+    "arunachal": ("Arunachal Pradesh", "Welcome to the Arunachal Pradesh Paper section."),
+    "manipur": ("Manipur", "Welcome to the Manipur Paper section."),
+    "meghalaya": ("Meghalaya", "Welcome to the Meghalaya Paper section."),
+    "mizoram": ("Mizoram", "Welcome to the Mizoram Paper section."),
+    "nagaland": ("Nagaland", "Welcome to the Nagaland Paper section."),
+    "sikkim": ("Sikkim", "Welcome to the Sikkim Paper section."),
+    "tripura": ("Tripura", "Welcome to the Tripura Paper section.")
+}
+
+st.sidebar.title("বিভাগ নির্বাচন কৰক")
+st.sidebar.subheader("Select State")
+
+if selected_state != "home":
+    if selected_state in state_pages:
+        state_title, state_message = state_pages[selected_state]
+        st.title(state_title)
+        st.write(state_message)
+    else:
+        st.title("Northeast Textbook & Papers")
+        st.write("Select a state from the Android Menu to view specific papers.")
+
+    st.stop()
+
 
 # -----------------------------------
 # HEADER
@@ -504,6 +537,6 @@ elif menu == "Faculty Admin":
 st.markdown("---")
 st.caption(
     "Prepared and Maintained by\n"
-    "Dr. Nirban Ray\n"
+    "Dr. Nirban Ray,\n"
     "Assistant Professor, Department of Political Science"
 )
