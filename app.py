@@ -245,37 +245,48 @@ if menu == "পাঠ্য সামগ্ৰী":
 # -----------------------------------
 elif menu == "Search Topic":
 
-    st.header("Search Topic")
+    st.title("Smart Topic Finder")
 
-    search_term = st.text_input("বিষয় লিখক")
+    st.write("Quickly find important topics from your semester content.")
 
-    if search_term:
+    search_unit = st.selectbox(
+        "Select Unit",
+        ["All Units"] + list(all_units.keys())
+    )
 
-        found = False
+    search_keyword = st.text_input(
+        "Enter topic keyword"
+    )
+    normalized_keyword = search_keyword.strip().lower()
 
+    st.markdown("---")
+
+    results_found = False
+
+    if normalized_keyword:
         for unit_name, topics in all_units.items():
+
+            if search_unit != "All Units" and unit_name != search_unit:
+                continue
+
             for topic_name, topic_content in topics.items():
 
-                if (
-                    search_term.lower() in topic_name.lower()
-                    or search_term.lower() in topic_content.lower()
-                ):
-                    found = True
+                if normalized_keyword in topic_name.lower():
 
-                    st.success(f"Found in {unit_name}")
-                    st.subheader(topic_name)
-                    st.write(topic_content)
+                    results_found = True
 
-                    # Suggested Further Reading
-                    if search_term in reference_data:
-                        st.markdown("---")
-                        st.subheader("Suggested Further Reading")
+                    st.subheader(f"{unit_name} → {topic_name}")
+                    st.write(topic_content[:500] + "...")
 
-                        for ref in reference_data[search_term]:
-                            st.write(f"• {ref}")
+                    if st.button(
+                        f"Open Full Topic: {topic_name}",
+                        key=topic_name
+                    ):
+                        st.session_state.menu = "পাঠ্য সামগ্ৰী"
+                        st.rerun()
 
-        if not found:
-            st.error("কোনো বিষয় পোৱা নগ'ল")
+    if normalized_keyword and not results_found:
+        st.warning("No matching topic found.")
 
 elif menu == "Exam Zone":
 
