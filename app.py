@@ -151,14 +151,20 @@ if selected_state != "home":
 # HEADER
 # -----------------------------------
 
-st.title("POL060304")
-st.subheader("Politics in Northeast India")
-st.write("ষষ্ঠ ষান্মাসিক | অসমীয়া ডিজিটেল পাঠ্যসামগ্ৰী")
+st.image("images/logo.png", width=140)
+
+st.title("POL060304 – Politics in Northeast India")
+st.subheader("B.P. Chaliha College (BPC)")
+st.markdown("### BA 6th Semester Academic Learning Platform")
+
+st.info("Updated for BA 6th Semester • 2026 Academic Session")
+
 st.markdown(
     """
-    **B.P Chaliha College (BPC)**  
-    BA 6th Semester
-    """
+Welcome to the official academic learning platform for Political Science students.
+This platform provides study materials, exam preparation support, model answers,
+visual learning resources, and faculty-guided academic content.
+"""
 )
 
 st.markdown("---")
