@@ -9,6 +9,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from io import BytesIO
 from pathlib import Path
+from PIL import Image
 
 # from content.unit1 import unit1_data
 # from content.unit2 import unit2_data
@@ -75,6 +76,26 @@ def create_pdf(title, content):
 
     buffer.seek(0)
     return buffer
+
+def load_visual_panel(image_name, panel=None):
+    image_path = BASE_DIR / "images" / image_name
+
+    with Image.open(image_path) as image:
+        if panel is None:
+            return image.copy()
+
+        width, height = image.size
+        half_width = width // 2
+        half_height = height // 2
+
+        crop_boxes = {
+            "top_left": (0, 0, half_width, half_height),
+            "top_right": (half_width, 0, width, half_height),
+            "bottom_left": (0, half_height, half_width, height),
+            "bottom_right": (half_width, half_height, width, height),
+        }
+
+        return image.crop(crop_boxes[panel]).copy()
 st.set_page_config(
     page_title="POL060304",
     layout="centered",
@@ -386,28 +407,40 @@ strategic location, and regional identity politics.
 """)
 
     elif visual_unit == "Ethnic Movements Timeline":
-        st.image("images/ethnic_movements.png", use_container_width=True)
+        st.image(
+            load_visual_panel("ethnic_movements.png", "top_left"),
+            use_container_width=True
+        )
         st.write("""
 Covers major ethnic assertions, identity movements, and autonomy demands
 across Northeast India.
 """)
 
     elif visual_unit == "Autonomy Councils Structure":
-        st.image("images/autonomy_council.png", use_container_width=True)
+        st.image(
+            load_visual_panel("autonomy_council.png", "top_right"),
+            use_container_width=True
+        )
         st.write("""
 Explains Sixth Schedule areas, Autonomous District Councils,
 and governance mechanisms.
 """)
 
     elif visual_unit == "Regional Political Movements":
-        st.image("images/regional_movements.png", use_container_width=True)
+        st.image(
+            load_visual_panel("regional_movements.png", "bottom_left"),
+            use_container_width=True
+        )
         st.write("""
 Important student revision topic for regionalism, sub-nationalism,
 and statehood movements.
 """)
 
     elif visual_unit == "Constitutional Framework of Northeast India":
-        st.image("images/constitutional_framework.png", use_container_width=True)
+        st.image(
+            load_visual_panel("constitutional_framework.png", "bottom_right"),
+            use_container_width=True
+        )
         st.write("""
 Important for exams covering constitutional provisions,
 special status, and federal structure.
