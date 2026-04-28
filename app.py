@@ -406,7 +406,7 @@ maps, diagrams, timelines, and visual summaries.
             "Ethnic Movements Timeline",
             "Autonomy Councils Structure",
             "Regional Political Movements",
-            "Constitutional Framework of Northeast India"
+            "Constitutional Framework of Northeast India",
             "Demographic Changes in Undivided Goalpara District",
         ]
     )
