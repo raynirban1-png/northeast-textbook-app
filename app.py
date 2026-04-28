@@ -167,45 +167,36 @@ st.markdown("---")
 # MAIN MENU
 # -----------------------------------
 
-menu = st.radio(
-    st.title("POL060304 – Politics in Northeast India")
-st.subheader("BA 6th Semester Academic Learning Platform")
-
-st.markdown("---")
+if "menu" not in st.session_state:
+    st.session_state.menu = "পাঠ্য সামগ্ৰী"
 
 col1, col2 = st.columns(2)
 
 with col1:
     if st.button("📘 Study Materials", use_container_width=True):
-        menu = "পাঠ্য সামগ্ৰী"
+        st.session_state.menu = "পাঠ্য সামগ্ৰী"
 
     if st.button("📝 Exam Zone", use_container_width=True):
-        menu = "Exam Zone"
+        st.session_state.menu = "Exam Zone"
 
     if st.button("📄 Model Answers", use_container_width=True):
-        menu = "Model Answers"
+        st.session_state.menu = "Model Answers"
 
     if st.button("⚡ Quick Revision", use_container_width=True):
-        menu = "দ্ৰুত পুনৰালোচনা"
+        st.session_state.menu = "দ্ৰুত পুনৰালোচনা"
 
 with col2:
     if st.button("🗺 Visual Learning Zone", use_container_width=True):
-        menu = "Visual Learning Zone"
+        st.session_state.menu = "Visual Learning Zone"
 
     if st.button("🔍 Search Topic", use_container_width=True):
-        menu = "Search Topic"
+        st.session_state.menu = "Search Topic"
 
     if st.button("👨‍🏫 Faculty Admin", use_container_width=True):
-        menu = "Faculty Admin"
+        st.session_state.menu = "Faculty Admin"
 
     if st.button("ℹ About & Disclaimer", use_container_width=True):
-        menu = "About & Disclaimer"
-
-if "menu" not in st.session_state:
-    st.session_state.menu = "পাঠ্য সামগ্ৰী"
-
-if "menu" in locals():
-    st.session_state.menu = menu
+        st.session_state.menu = "About & Disclaimer"
 
 menu = st.session_state.menu
 
