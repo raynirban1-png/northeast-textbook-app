@@ -143,6 +143,7 @@ menu = st.radio(
         "Model Answers",
         "দ্ৰুত পুনৰালোচনা",
         "Visual Learning Zone",
+        "About & Disclaimer",
         "Faculty Admin"
     )
 )
@@ -320,6 +321,40 @@ elif menu == "Visual Learning Zone":
 - Excluded Areas vs Sixth Schedule  
 - Naga Nationalism vs Assam Movement  
 """)
+elif menu == "About & Disclaimer":
+
+    st.title("About This Academic App")
+
+    st.markdown("""
+### POL060304 - Politics in Northeast India
+
+This platform is developed for academic support of BA 6th Semester students.
+
+### Academic Disclaimer
+
+- This app is created strictly for educational purposes only.
+- It is not an official university publication.
+- Students must verify final academic guidance with faculty members and official syllabus.
+
+### Credits
+
+- Developed By: Nirban Ray
+- Institution Support: B.P. Chaliha College
+- Department: Political Science
+- Course Code: POL060304
+- Semester: BA 6th Semester
+- Platform Version: v1.0
+
+### Copyright Notice
+
+- Content belongs to respective academic and educational sources and is in the developmental stage.
+- Unauthorized commercial reproduction is prohibited.
+- Educational fair use only.
+
+### Feedback
+
+For corrections, updates, or faculty review, please contact the department/admin.
+""")
 elif menu == "Faculty Admin":
 
     password = st.text_input(
@@ -428,7 +463,6 @@ elif menu == "Faculty Admin":
                 else:
                     st.error("Save verification failed. The JSON file did not update as expected.")
 
-
         st.markdown("---")
         st.subheader("Backup System")
 
@@ -441,6 +475,7 @@ elif menu == "Faculty Admin":
             file_name="notes_backup.json",
             mime="application/json"
         )
+
         st.markdown("---")
         st.subheader("Restore Backup")
 
