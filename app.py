@@ -358,38 +358,59 @@ elif menu == "দ্ৰুত পুনৰালোচনা":
 elif menu == "Visual Learning Zone":
 
     st.title("Visual Learning Zone")
+    st.subheader("Revision + Infographic Center")
 
-    st.subheader("Political Maps")
-    st.image("images/northeast_india_map.jpg", caption="Northeast India Political Map", use_container_width=True)
     st.markdown("""
-- Northeast India Political Map  
-- Colonial Assam Administrative Divisions  
-- Sixth Schedule Autonomous Areas  
-- State Reorganisation Maps  
-- Migration Routes in Assam  
+This section helps students revise important concepts quickly using
+maps, diagrams, timelines, and visual summaries.
 """)
 
-    st.subheader("Historical Timelines")
-    st.markdown("""
-- Treaty of Yandabo (1826)  
-- Phulaguri Dhewa (1861)  
-- Patharughat Uprising (1894)  
-- Assam Movement (1979–1985)  
-- Assam Accord (1985)  
+    visual_unit = st.selectbox(
+        "Select Visual Learning Topic",
+        [
+            "Political Map of Northeast India",
+            "Ethnic Movements Timeline",
+            "Autonomy Councils Structure",
+            "Regional Political Movements",
+            "Constitutional Framework of Northeast India"
+        ]
+    )
+
+    st.markdown("---")
+
+    if visual_unit == "Political Map of Northeast India":
+        st.image("images/northeast_india_map.jpg", use_container_width=True)
+        st.write("""
+Important for understanding state formation, political boundaries,
+strategic location, and regional identity politics.
 """)
 
-    st.subheader("Concept Flowcharts")
-    st.markdown("""
-- Colonial Policy → Economic Exploitation → Resistance  
-- Immigration → Identity Politics → Assam Movement  
-- Sixth Schedule → Autonomy → Political Consequences  
+    elif visual_unit == "Ethnic Movements Timeline":
+        st.image("images/ethnic_movements.png", use_container_width=True)
+        st.write("""
+Covers major ethnic assertions, identity movements, and autonomy demands
+across Northeast India.
 """)
 
-    st.subheader("Comparative Analysis")
-    st.markdown("""
-- Colonial vs Marxist Historiography  
-- Excluded Areas vs Sixth Schedule  
-- Naga Nationalism vs Assam Movement  
+    elif visual_unit == "Autonomy Councils Structure":
+        st.image("images/autonomy_council.png", use_container_width=True)
+        st.write("""
+Explains Sixth Schedule areas, Autonomous District Councils,
+and governance mechanisms.
+""")
+
+    elif visual_unit == "Regional Political Movements":
+        st.image("images/regional_movements.png", use_container_width=True)
+        st.write("""
+Important student revision topic for regionalism, sub-nationalism,
+and statehood movements.
+""")
+
+    elif visual_unit == "Constitutional Framework of Northeast India":
+        st.image("images/constitutional_framework.png", use_container_width=True)
+        st.write("""
+Important for exams covering constitutional provisions,
+special status, and federal structure.
 """)
 elif menu == "About & Disclaimer":
 
