@@ -1113,29 +1113,53 @@ def render_academic_block(text):
 
     st.markdown(html, unsafe_allow_html=True)
 
-def render_units(all_units):
+def render_units(data):
 
-    # Unit selection
+    units = list(data.keys())
+
     selected_unit = st.selectbox(
         "Unit নিৰ্বাচন কৰক",
-        list(all_units.keys()),
-        key="selected_unit"
+        units,
+        key="unit_selector"
     )
 
-    # Topic selection (depends on selected unit)
-    selected_topic = st.selectbox(
-        "বিষয় নিৰ্বাচন কৰক",
-        list(all_units[selected_unit].keys()),
-        key="selected_topic"
-    )
+    content_block = data[selected_unit]
 
     st.markdown("---")
 
-    # Always compute fresh content (no session_state reuse)
-    content = all_units[selected_unit][selected_topic]
+    # CASE 1: dict (Study / Exam / Model)
+    if isinstance(content_block, dict):
 
-    # Display
-    st.write(content)
+        topics = list(content_block.keys())
+
+        selected_topic = st.selectbox(
+            "বিষয় নিৰ্বাচন কৰক",
+            topics,
+            key="topic_selector"
+        )
+
+        content = content_block[selected_topic]
+
+        # Sub-case A: text
+        if isinstance(content, str):
+            st.write(content)
+
+        # Sub-case B: list (Exam Zone)
+        elif isinstance(content, list):
+            for item in content:
+                st.markdown(f"- {item}")
+
+        # Sub-case C: nested dict (Model Answers)
+        elif isinstance(content, dict):
+            for q, ans in content.items():
+                st.markdown(f"**{q}**")
+                st.markdown(ans)
+                st.markdown("---")
+
+    # CASE 2: list (Quick Revision)
+    elif isinstance(content_block, list):
+        for item in content_block:
+            st.markdown(f"- {item}")
 
 
 
@@ -1437,18 +1461,20 @@ elif menu == "Exam Zone":
 elif menu == "Model Answers": 
   render_units(model_answers_data)
 
-elif menu == "দ্রুত পুনৰালোচনা":
-    st.header("দ্ৰুত পুনৰালোচনা")
+elif menu == "দ্ৰুত পুনৰালোচনা":
 
-    selected_revision_unit = st.selectbox(
+    st.header("⚡ Quick Revision")
+
+    selected_unit = st.selectbox(
         "ইউনিট নিৰ্বাচন কৰক",
-        list(quick_revision_data.keys())
+        list(quick_revision_data.keys()),
+        key="revision_unit"
     )
 
     st.markdown("---")
 
-    for item in quick_revision_data[selected_revision_unit]:
-        st.markdown(f"• {item}")
+    for item in quick_revision_data[selected_unit]:
+        st.markdown(f"- {item}")
 
 elif menu == "Visual Learning Zone":
 
