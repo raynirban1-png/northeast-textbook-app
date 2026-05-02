@@ -1378,32 +1378,8 @@ with col2:
 
 menu = st.session_state.get("menu")
 
-col1, col2 = st.columns(2)
-
-if col1.button("📘 Study Materials"):
-    st.session_state["menu"] = "study"
-    st.session_state["selected_unit"] = None
-    st.session_state["selected_topic"] = None
-
-if col2.button("📝 Exam Zone"):
-    st.session_state["menu"] = "exam"
-    st.session_state["selected_unit"] = None
-    st.session_state["selected_topic"] = None
-
-if col1.button("📄 Model Answers"):
-    st.session_state["menu"] = "model"
-    st.session_state["selected_unit"] = None
-    st.session_state["selected_topic"] = None
-
-if col2.button("⚡ Quick Revision"):
-    st.session_state["menu"] = "revision"
-    st.session_state["selected_unit"] = None
-    st.session_state["selected_topic"] = None
-
-st.markdown("---")
 # -----------------------------------
-# STUDY MATERIALS
-# -----------------------------------
+
 
 if menu == "পাঠ্য সামগ্ৰী":
 
