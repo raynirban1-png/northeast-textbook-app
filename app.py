@@ -1,84 +1,6 @@
 import streamlit as st
-import token
-import streamlit as st
-import os
-import json
-import sys
-from pprint import pformat
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
-from io import BytesIO
-from pathlib import Path
-from PIL import Image
-import os
-
-def render_image_token(token):
-    # token like: "path.png | caption text"
-    parts = [p.strip() for p in token.split("|", 1)]
-    img_name = parts[0]
-    caption = parts[1] if len(parts) > 1 else None
-
-    img_path = os.path.join("images", img_name)
-
-    if not os.path.exists(img_path):
-        st.warning(f"Missing image: {img_name}")
-        return
-
-    try:
-        st.image(img_path, use_container_width=True)
-        st.markdown("---")
-        if caption:
-            st.caption(caption)
-    except Exception:
-        st.warning(f"Image error: {img_name}")
-
-def render_academic_block(text):
-    import markdown
-
-    lines = text.strip().split("\n")
-
-    # First line = title
-    title = lines[0]
-    body = "\n".join(lines[1:])
-
-    # Convert markdown → HTML
-    html_body = markdown.markdown(body)
-
-    # Classify block type
-    if "Exam Focus" in title or "🎯" in title:
-        color = "#0d6efd"
-        label = "🎯 Exam Focus"
-    elif "Visual" in title or "🧭" in title:
-        color = "#198754"
-        label = "🧭 Visual Insight"
-    elif "Analysis" in title or "বিশ্লেষণ" in title:
-        color = "#6f42c1"
-        label = "🧠 Analysis"
-    elif "Critical" in title or "সমালোচনামূলক" in title:
-        color = "#dc3545"
-        label = "⚖️ Critical View"
-    else:
-        color = "#6c757d"
-        label = title
-
-    st.markdown(
-        f"""
-        <div style="
-            border-left: 5px solid {color};
-            padding: 12px;
-            margin: 10px 0;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-        ">
-        <strong>{label}</strong><br>
-        {html_body}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+from questions.important_questions import exam_zone_data
+from questions.model_answers import model_answers_data
 
 # UNIT I CONTENT
 topic1 = """
@@ -1110,6 +1032,124 @@ Security vs Democracy dilemma
 - উত্তৰ-পূৰ্ব ভাৰতত শাসনৰ সমস্যা আলোচনা কৰা
 """
 
+all_units = {
+    "Unit I": {
+        "ভূ-কৌশলগত অৱস্থান আৰু সমাজ-সংস্কৃতিক বৈচিত্ৰ্য": topic1,
+        "ঔপনিৱেশিক শাসনৰ বিস্তাৰ আৰু সুদৃঢ়ীকৰণ": topic2,
+        "Excluded আৰু Partially Excluded অঞ্চল": topic3,
+        "ঔপনিৱেশিক বিৰোধী বিদ্ৰোহ": topic4
+    },
+
+        "Unit II": {
+        "ভাষা ৰাজনীতি": unit2_topic1,
+        "অসম আন্দোলন": unit2_topic2,
+        "বড়ো আন্দোলন": unit2_topic3
+    },
+
+        "Unit III": {
+        "জাতিগত আন্দোলন": unit3_topic1,
+        "স্বায়ত্তশাসিত পৰিষদ": unit3_topic2,
+        "আঞ্চলিক আন্দোলন": unit3_topic3
+    },
+
+        "Unit IV": {
+        "বিদ্ৰোহ": unit4_topic1,
+        "শান্তি চুক্তি": unit4_topic2,
+        "সুৰক্ষা আৰু শাসন": unit4_topic3
+    }
+}
+import os
+import json
+import sys
+from pprint import pformat
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+from io import BytesIO
+from pathlib import Path
+from PIL import Image
+
+
+if "menu" not in st.session_state:
+    st.session_state["menu"] = None
+if "selected_unit" not in st.session_state:
+    st.session_state["selected_unit"] = None
+if "selected_topic" not in st.session_state:
+    st.session_state["selected_topic"] = None
+
+def render_academic_block(text):
+    import markdown
+
+    lines = text.strip().split("\n")
+    title = lines[0]
+    body = "\n".join(lines[1:])
+    html_body = markdown.markdown(body)
+
+    if "Exam Focus" in title or "🎯" in title:
+        color = "#0d6efd"
+        label = "🎯 Exam Focus"
+    elif "Visual" in title or "🧭" in title:
+        color = "#198754"
+        label = "🧭 Visual Insight"
+    elif "Analysis" in title or "বিশ্লেষণ" in title:
+        color = "#6f42c1"
+        label = "🧠 Analysis"
+    elif "Critical" in title or "সমালোচনামূলক" in title:
+        color = "#dc3545"
+        label = "⚖️ Critical View"
+    else:
+        color = "#6c757d"
+        label = title
+
+    html = f"""
+<div style="border-left: 5px solid {color}; padding: 12px; margin: 10px 0; background-color: #f8f9fa; border-radius: 6px;">
+<strong>{label}</strong><br>
+{html_body}
+</div>
+"""
+
+    st.markdown(html, unsafe_allow_html=True)
+
+def render_units(all_units):
+    units = list(all_units.keys())
+
+    selected_unit = st.selectbox(
+        "Unit নিৰ্বাচন কৰক",
+        units,
+        index=units.index(st.session_state["selected_unit"])
+        if st.session_state["selected_unit"] in units else 0
+    )
+
+    if st.session_state["selected_unit"] != selected_unit:
+        st.session_state["selected_unit"] = selected_unit
+        st.session_state["selected_topic"] = None
+
+    topics = list(all_units[selected_unit].keys())
+
+    selected_topic = st.selectbox(
+        "বিষয় নিৰ্বাচন কৰক",
+        topics,
+        index=topics.index(st.session_state["selected_topic"])
+        if st.session_state["selected_topic"] in topics else 0
+    )
+
+    st.session_state["selected_topic"] = selected_topic
+
+    st.markdown("---")
+
+    unit = st.session_state["selected_unit"]
+    topic = st.session_state["selected_topic"]
+
+    if unit in all_units and topic in all_units[unit]:
+        content = all_units[unit][topic]
+        st.write(content)
+    else:
+        st.warning("Invalid selection")
+
+
+
 # from content.unit1 import unit1_data
 # from content.unit2 import unit2_data
 # from content.unit3 import unit3_data
@@ -1336,7 +1376,29 @@ with col2:
     if st.button("ℹ About & Disclaimer", use_container_width=True):
         st.session_state.menu = "About & Disclaimer"
 
-menu = st.session_state.menu
+menu = st.session_state.get("menu")
+
+col1, col2 = st.columns(2)
+
+if col1.button("📘 Study Materials"):
+    st.session_state["menu"] = "study"
+    st.session_state["selected_unit"] = None
+    st.session_state["selected_topic"] = None
+
+if col2.button("📝 Exam Zone"):
+    st.session_state["menu"] = "exam"
+    st.session_state["selected_unit"] = None
+    st.session_state["selected_topic"] = None
+
+if col1.button("📄 Model Answers"):
+    st.session_state["menu"] = "model"
+    st.session_state["selected_unit"] = None
+    st.session_state["selected_topic"] = None
+
+if col2.button("⚡ Quick Revision"):
+    st.session_state["menu"] = "revision"
+    st.session_state["selected_unit"] = None
+    st.session_state["selected_topic"] = None
 
 st.markdown("---")
 # -----------------------------------
@@ -1345,119 +1407,8 @@ st.markdown("---")
 
 if menu == "পাঠ্য সামগ্ৰী":
 
-    all_units = {
-    "Unit I": {
-        "ভূ-কৌশলগত অৱস্থান আৰু সমাজ-সংস্কৃতিক বৈচিত্ৰ্য": topic1,
-        "ঔপনিৱেশিক শাসনৰ বিস্তাৰ আৰু সুদৃঢ়ীকৰণ": topic2,
-        "Excluded আৰু Partially Excluded অঞ্চল": topic3,
-        "ঔপনিৱেশিক বিৰোধী বিদ্ৰোহ": topic4
-    },
+    render_units(all_units)
 
-        "Unit II": {
-        "ভাষা ৰাজনীতি": unit2_topic1,
-        "অসম আন্দোলন": unit2_topic2,
-        "বড়ো আন্দোলন": unit2_topic3
-    },
-
-        "Unit III": {
-        "জাতিগত আন্দোলন": unit3_topic1,
-        "স্বায়ত্তশাসিত পৰিষদ": unit3_topic2,
-        "আঞ্চলিক আন্দোলন": unit3_topic3
-    },
-
-        "Unit IV": {
-        "বিদ্ৰোহ": unit4_topic1,
-        "শান্তি চুক্তি": unit4_topic2,
-        "সুৰক্ষা আৰু শাসন": unit4_topic3
-    }
-}
-
-    selected_unit = st.selectbox(
-        "ইউনিট নিৰ্বাচন কৰক",
-        list(all_units.keys())
-    )
-    st.session_state["selected_unit"] = selected_unit
-
-    selected_topic = st.selectbox(
-        "বিষয় নিৰ্বাচন কৰক",
-        list(all_units[selected_unit].keys())
-    )
-    st.session_state["selected_topic"] = selected_topic
-
-    st.markdown("----")
-
-if "selected_unit" in st.session_state and "selected_topic" in st.session_state:
-
-    unit = st.session_state["selected_unit"]
-
-    topic = st.session_state["selected_topic"]
-
-    content = all_units[unit][topic]
-
-    st.write(content)
-
-    blocks = content.split("👉")
-
-import os
-
-for i, block in enumerate(blocks):
-
-    # ---------------- MAIN CONTENT ----------------
-    if i == 0:
-        lines = block.split("\n")
-
-        for line in lines:
-            if line.startswith("[Image:"):
-                token = line.replace("[Image:", "").replace("]", "").strip()
-                render_image_token(token)
-            else:
-                st.markdown(line) 
-    else:
-        title = block.strip().split("\n")[0].replace("👉", "").strip()[:80]
-
-# ---------------- EXPANDER CONTENT ----------------
-        with st.expander(title, expanded=False):
-            lines = block.split("\n")
-
-    buffer = ""
-
-    first_line = True  # to skip duplicate title
-
-    for line in lines:
-
-        # skip first line (already used as title)
-        if first_line:
-            first_line = False
-            continue
-
-        if line.startswith("[Image:"):
-            if buffer.strip():
-                render_academic_block(buffer)
-                buffer = ""
-
-            token = line.replace("[Image:", "").replace("]", "").strip()
-            render_image_token(token)
-
-        else:
-            buffer += line + "\n"
-
-    if buffer.strip():
-        render_academic_block(buffer)
-
-pdf_file = create_pdf(
-    selected_topic,
-    content
-)
-
-st.download_button(
-    label="PDF নোট ডাউনলোড কৰক",
-    data=pdf_file,
-    file_name=f"{selected_topic}.pdf",
-    mime="application/pdf",
-    key=f"download_{selected_unit}_{selected_topic}"
-)
-
- 
 
 # -----------------------------------
 # IMPORTANT QUESTIONS
@@ -1495,94 +1446,46 @@ if menu == "Search Topic":
                     results_found = True
 
                     st.subheader(f"{unit_name} → {topic_name}")
-                    st.write(topic_content[:500] + "...")
+                    render_academic_block(topic_content[:500])
 
                     if st.button(
                         f"Open Full Topic: {topic_name}",
                         key=topic_name
                     ):
-                        st.session_state.menu = "পাঠ্য সামগ্ৰী"
+                        st.session_state["selected_unit"] = unit_name
+                        st.session_state["selected_topic"] = topic_name
+                        st.session_state["menu"] = "পাঠ্য সামগ্ৰী"
                         st.rerun()
 
     if normalized_keyword and not results_found:
         st.warning("No matching topic found.")
 
 elif menu == "Exam Zone":
-
-    st.header("Exam Zone")
-
-    selected_exam = st.selectbox(
-        "বিভাগ নিৰ্বাচন কৰক",
-        list(exam_zone_data.keys())
-    )
-
-    st.header(selected_exam)
-
-    for section, questions in exam_zone_data[selected_exam].items():
-
-        st.subheader(section)
-
-        for q in questions:
-            st.write(q)
-
-        st.markdown("---")
-
+    render_units(exam_zone_data)
     
-
 # -----------------------------------
 # QUICK REVISION
 # -----------------------------------
-elif menu == "Model Answers":
+elif menu == "Model Answers": 
+  render_units(model_answers_data)
 
-    st.header("Model Answers")
-
-    selected_answer = st.selectbox(
-        "উত্তৰ নির্বাচন কৰক",
-        list(model_answers_data.keys())
-    )
-
-    selected_model_answer = model_answers_data[selected_answer]
-
-    if isinstance(selected_model_answer, dict):
-        for question, answer in selected_model_answer.items():
-            st.subheader(question)
-
-            if isinstance(answer, str):
-                st.markdown(answer.replace("\n", "\n\n"))
-            elif isinstance(answer, dict):
-                for sub_question, sub_answer in answer.items():
-                    st.markdown(f"**{sub_question}**")
-                    st.markdown(str(sub_answer).replace("\n", "\n\n"))
-            elif isinstance(answer, (list, tuple)):
-                for item in answer:
-                    st.markdown(str(item).replace("\n", "\n\n"))
-            else:
-                st.markdown(str(answer).replace("\n", "\n\n"))
-
-            st.markdown("---")
-    else:
-        st.markdown(str(selected_model_answer).replace("\n", "\n\n"))
-
-elif menu == "দ্ৰুত পুনৰালোচনা":
-
+elif menu == "দ্রুত পুনৰালোচনা":
     st.header("দ্ৰুত পুনৰালোচনা")
 
     selected_revision_unit = st.selectbox(
-        "ইউনিট নির্বাচন কৰক",
+        "ইউনিট নিৰ্বাচন কৰক",
         list(quick_revision_data.keys())
     )
 
+    st.markdown("---")
+
     for item in quick_revision_data[selected_revision_unit]:
-        st.write(f"• {item}")
+        st.markdown(f"• {item}")
+
 elif menu == "Visual Learning Zone":
 
     st.title("Visual Learning Zone")
     st.subheader("Revision + Infographic Center")
-
-    st.markdown("""
-This section helps students revise important concepts quickly using
-maps, diagrams, timelines, and visual summaries.
-""")
 
     visual_unit = st.selectbox(
         "Select Visual Learning Topic",
@@ -1592,11 +1495,9 @@ maps, diagrams, timelines, and visual summaries.
             "Autonomy Councils Structure",
             "Regional Political Movements",
             "Constitutional Framework of Northeast India",
-            "Demographic Changes in Undivided Goalpara District",
+            "Demographic Changes in Undivided Goalpara District"
         ]
     )
-
-    st.markdown("---")
 
     if visual_unit == "Political Map of Northeast India":
         st.image("images/northeast_india_map.jpg", use_container_width=True)
@@ -1700,6 +1601,7 @@ This platform is developed for academic support of BA 6th Semester students.
 
 For corrections, updates, or faculty review, please contact the department/admin.
 """)
+
 elif menu == "Faculty Admin":
 
     st.title("Faculty Admin")
