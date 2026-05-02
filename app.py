@@ -1,6 +1,7 @@
 import streamlit as st
 from questions.important_questions import exam_zone_data
 from questions.model_answers import model_answers_data
+from revision.quick_revision import quick_revision_data
 
 # UNIT I CONTENT
 topic1 = """
@@ -1113,40 +1114,28 @@ def render_academic_block(text):
     st.markdown(html, unsafe_allow_html=True)
 
 def render_units(all_units):
-    units = list(all_units.keys())
 
+    # Unit selection
     selected_unit = st.selectbox(
         "Unit নিৰ্বাচন কৰক",
-        units,
-        index=units.index(st.session_state["selected_unit"])
-        if st.session_state["selected_unit"] in units else 0
+        list(all_units.keys()),
+        key="selected_unit"
     )
 
-    if st.session_state["selected_unit"] != selected_unit:
-        st.session_state["selected_unit"] = selected_unit
-        st.session_state["selected_topic"] = None
-
-    topics = list(all_units[selected_unit].keys())
-
+    # Topic selection (depends on selected unit)
     selected_topic = st.selectbox(
-        "বিষয় নিৰ্বাচন কৰক",
-        topics,
-        index=topics.index(st.session_state["selected_topic"])
-        if st.session_state["selected_topic"] in topics else 0
+        "বিষয় নিৰ্বাচন কৰক",
+        list(all_units[selected_unit].keys()),
+        key="selected_topic"
     )
-
-    st.session_state["selected_topic"] = selected_topic
 
     st.markdown("---")
 
-    unit = st.session_state["selected_unit"]
-    topic = st.session_state["selected_topic"]
+    # Always compute fresh content (no session_state reuse)
+    content = all_units[selected_unit][selected_topic]
 
-    if unit in all_units and topic in all_units[unit]:
-        content = all_units[unit][topic]
-        st.write(content)
-    else:
-        st.warning("Invalid selection")
+    # Display
+    st.write(content)
 
 
 
@@ -1417,7 +1406,10 @@ if menu == "Search Topic":
 
             for topic_name, topic_content in topics.items():
 
-                if normalized_keyword in topic_name.lower():
+                if (
+                    normalized_keyword in topic_name.lower()
+                    or normalized_keyword in topic_content.lower()
+                ):
 
                     results_found = True
 
