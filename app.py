@@ -2,6 +2,10 @@ import streamlit as st
 from questions.important_questions import exam_zone_data
 from questions.model_answers import model_answers_data
 from revision.quick_revision import quick_revision_data
+from questions.model_answers import save_model_answers
+from analytics import log_usage
+import pandas as pd
+from analytics import conn
 
 # UNIT I CONTENT
 topic1 = """
@@ -1139,6 +1143,7 @@ def render_units(data):
         )
 
         content = content_block[selected_topic]
+        log_usage("study", selected_unit, selected_topic)
 
         # Sub-case A: text
         if isinstance(content, str):
@@ -1763,6 +1768,84 @@ elif menu == "Faculty Admin":
 
         else:
             st.error("Question cannot be empty.")
+
+    st.markdown("---")
+    st.subheader("✏️ Model Answers Editor")
+
+    unit = st.selectbox(
+            "Select Unit",
+            list(model_answers_data.keys()),
+            key="model_unit"
+        )
+
+    questions = model_answers_data[unit]
+
+    question = st.selectbox(
+        "Select Question",
+        list(questions.keys()),
+        key="model_question"
+    )
+
+    current_answer = questions[question]
+
+    edited_answer = st.text_area(
+        "Edit Answer",
+        current_answer,
+        height=200
+    )
+
+    if st.button("Save Model Answer"):
+        model_answers_data[unit][question] = edited_answer
+        save_model_answers(model_answers_data)
+        st.success("Saved successfully")   
+
+    st.markdown("---")
+    st.subheader("✏️ Quick Revision Editor")
+
+    selected_unit = st.selectbox(
+        "Select Unit",
+        list(quick_revision_data.keys()),
+        key="edit_revision_unit"
+    )
+
+    current_items = quick_revision_data[selected_unit]
+
+    edited_text = st.text_area(
+        "Edit Revision (one point per line)",
+        "\n".join(current_items),
+        height=200
+    )
+
+    if st.button("Save Revision Update"):
+        updated_list = [
+            line.strip() for line in edited_text.split("\n") if line.strip()
+        ]
+
+        quick_revision_data[selected_unit] = updated_list
+
+        from revision.quick_revision import save_quick_revision
+        save_quick_revision(quick_revision_data)
+
+        st.success("Saved successfully")   
+
+    st.markdown("---")
+    st.subheader("📊 Usage Analytics")
+
+    df = pd.read_sql("SELECT * FROM usage", conn)
+
+    if not df.empty:
+            st.dataframe(df.tail(20))
+
+            st.subheader("Most Viewed Topics")
+            st.write(
+                df.groupby("topic")
+                .size()
+                .sort_values(ascending=False)
+                .head(10)
+            )
+    else:
+            st.info("No analytics data yet")
+
     
     st.markdown("---")
     st.subheader("Backup System")
@@ -1797,6 +1880,8 @@ elif menu == "Faculty Admin":
 
         st.session_state["faculty_restore_success"] = True
         st.rerun()
+
+        
 # -----------------------------------
 # FOOTER
 # -----------------------------------

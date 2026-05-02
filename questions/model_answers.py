@@ -1,3 +1,5 @@
+import os
+import json
 model_answers_data = {
     "Unit I: Colonial Policy – Annexation and Administration": {
         "1. অসমত ঔপনিবেশিক প্ৰশাসনিক নীতি সমালোচনামূলকভাৱে আলোচনা কৰা।":
@@ -89,3 +91,11 @@ model_answers_data = {
     """স্বাধীনতা আন্দোলনে আঞ্চলিক চেতনা গঢ়ি তোলে। স্বাধীনতাৰ পিছত এই চেতনাই জাতিগত স্বাতন্ত্র্য আৰু স্বায়ত্তশাসনৰ দাবীত ৰূপান্তৰিত হয়। নাগা আৰু অসমীয়া ৰাজনীতিত স্বাধীনতা আন্দোলনৰ ঐতিহাসিক স্মৃতি পৰিচয় ৰাজনীতিক শক্তিশালী কৰে।"""
     }
 }
+def save_model_answers(data):
+    with open("model_answers.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        if os.path.exists("model_answers.json"):
+                with open("model_answers.json", "r", encoding="utf-8") as f:
+                        loaded = json.load(f)
+                        if loaded:
+                                model_answers_data = loaded
