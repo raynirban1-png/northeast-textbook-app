@@ -3,3 +3,4 @@ markdown
 Pillow
 pandas
 numpy
+reportlab
