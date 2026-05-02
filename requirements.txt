@@ -1,3 +1,5 @@
 streamlit
 markdown
 Pillow
+pandas
+numpy

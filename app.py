@@ -1,3 +1,7 @@
+import streamlit as st
+
+st.title("TEST WORKING")
+st.write("If you see this, app is fine")
 import token
 
 import streamlit as st
