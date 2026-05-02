@@ -1376,18 +1376,27 @@ if menu == "পাঠ্য সামগ্ৰী":
         "ইউনিট নিৰ্বাচন কৰক",
         list(all_units.keys())
     )
+    st.session_state["selected_unit"] = selected_unit
 
     selected_topic = st.selectbox(
         "বিষয় নিৰ্বাচন কৰক",
         list(all_units[selected_unit].keys())
     )
+    st.session_state["selected_topic"] = selected_topic
 
     st.markdown("----")
-# st.header(selected_topic)  # ❌ remove this
 
-content = all_units[selected_unit][selected_topic]
+if "selected_unit" in st.session_state and "selected_topic" in st.session_state:
 
-blocks = content.split("👉")
+    unit = st.session_state["selected_unit"]
+
+    topic = st.session_state["selected_topic"]
+
+    content = all_units[unit][topic]
+
+    st.write(content)
+
+    blocks = content.split("👉")
 
 import os
 
