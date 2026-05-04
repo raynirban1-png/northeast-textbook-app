@@ -7,21 +7,7 @@ from analytics import log_usage
 import pandas as pd
 from analytics import conn
 
-@st.cache_data(show_spinner=False)
-def get_study_data():
-    return all_units
 
-@st.cache_data(show_spinner=False)
-def get_model_data():
-    return model_answers_data
-
-@st.cache_data(show_spinner=False)
-def get_revision_data():
-    return quick_revision_data
-
-@st.cache_data(show_spinner=False)
-def get_exam_data():
-    return exam_zone_data
 
 # UNIT I CONTENT
 topic1 = """
@@ -1417,11 +1403,12 @@ menu = st.session_state.get("menu")
 
 if menu == "পাঠ্য সামগ্ৰী":
 
-    render_units(get_study_data())
-    st.cache_data.clear()
-    st.rerun()
+    render_units(all_units)
 
 
+# -----------------------------------
+# IMPORTANT QUESTIONS
+# -----------------------------------
 if menu == "Search Topic":
 
     st.title("Smart Topic Finder")
@@ -1472,33 +1459,28 @@ if menu == "Search Topic":
     if normalized_keyword and not results_found:
         st.warning("No matching topic found.")
 
-        st.cache_data.clear()
-        st.rerun()
-
 elif menu == "Exam Zone":
-    render_units(get_exam_data())
-    st.cache_data.clear()
-    st.rerun()
+    render_units(exam_zone_data)
+    
 # -----------------------------------
 # QUICK REVISION
 # -----------------------------------
 elif menu == "Model Answers": 
-  render_units(get_model_data())
-  
+  render_units(model_answers_data)
 
 elif menu == "দ্ৰুত পুনৰালোচনা":
-  
+
     st.header("⚡ Quick Revision")
 
     selected_unit = st.selectbox(
         "ইউনিট নিৰ্বাচন কৰক",
-        list(get_revision_data().keys()),
+        list(quick_revision_data.keys()),
         key="revision_unit"
     )
 
     st.markdown("---")
 
-    for item in get_revision_data()[selected_unit]:
+    for item in quick_revision_data[selected_unit]:
         st.markdown(f"- {item}")
 
 elif menu == "Visual Learning Zone":
